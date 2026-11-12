@@ -17,7 +17,14 @@ We compared two AI blueprints (both in `docs/`):
 
 The tool is **Rigby2D** (open source, MIT or Apache-2.0, public beta, pinned commit in `puppet.yml`). Its AutoRig turns a layered PSD into bones, weighted meshes (a whole arm bends at the elbow) and IK. We drive its MCP tools directly from Node (`puppet/rb.mjs`), so no editor is needed.
 
-## Puppet pipeline (`puppet/run.sh`)
+## Walks toward camera: drawn, not rigged (decision 2026-11-13)
+The puppet walk looked robotic: a stiff cut-out with a floating head. Walks now use **drawings**, the classic cartoon way (`walk/`):
+1. Make an AI edit of the shot's character (e.g. `s1_A.png`) in a walking-toward-viewer pose on #00FF00 (`art/wk1.png`). `key.py` removes the green, giving `art/k1.png`.
+2. `mirror_legs.py` mirrors only the legs to get the other-foot drawing (`k1m.png`). The face and props stay identical, so nothing flickers.
+3. `walk_toward.py` alternates the 2 drawings each step (0.42 s), scales him up with perspective (z 2.5 to 1.0, ground line to the horizon), adds bob (high at passing), small sway and a contact shadow. It plays real CC0 footsteps on each contact, getting louder as he nears, then cuts to the standing shot.
+Run: `cd walk && python3 walk_toward.py` (needs numpy, pillow, ffmpeg).
+
+## Puppet pipeline (`puppet/run.sh`): small gestures only, not walks
 1. **Art**: an AI "parts sheet" of the character on pure green #00FF00, with head, torso, pelvis, two whole arms and two whole legs drawn separately and with rounded joint ends. There is one sheet per view: `art/parts_v1.png` (front) and `art/side_parts_v1.png` (side, facing right). Head variants (talk, shock, blink) are AI edits of the base head (`art/heads/`).
 2. `extract.py`: green key, then one PNG per part. `heads.py`: talk and blink are patched onto the base head so the face does not jump.
 3. `assemble.py` / `assemble_side.py`: place the parts on a 1000x1600 canvas. Limbs go behind the torso so joints hide; far limbs on the side view are darkened. `mkpsd.mjs` writes the layered PSD. **Layer names matter**: `head`, `torso`, `pelvis`, `arm_l/arm_r`, `leg_l/leg_r`, where l and r are the *character's* sides.

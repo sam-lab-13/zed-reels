@@ -6,3 +6,4 @@
 - surprised.wav: "Surprise Exclamation" #3534, BigSoundBank
 - chant.wav: mix of "Manifestation #1" #0108 + "Shouts and Applauses of Teens #2" #0237 + "Gas fog horn #2" #1049, BigSoundBank
 - cheer.wav: #0237, pain.wav: "Cry of Pain" #2361, horn.wav: #1049, BigSoundBank
+- walk/art/hits.npy: single steps cut from "Fast Steps on Concrete" #1318 by Joseph Sardin, BigSoundBank (https://bigsoundbank.com/fast-steps-on-concrete-s1318.html), CC0
