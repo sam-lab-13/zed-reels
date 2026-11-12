@@ -1,0 +1,11 @@
+node_modules/
+parts1/
+side1/
+layers/
+layers_side/
+fr/
+frs/
+*.psd
+*.rigby
+ops*.json
+motion*.json

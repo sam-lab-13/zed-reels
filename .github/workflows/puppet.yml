@@ -1,0 +1,27 @@
+name: puppet-test
+# Manual run: Actions tab -> puppet-test -> Run workflow. Builds both rigs and renders out/puppet_test.mp4.
+on:
+  workflow_dispatch:
+  push:
+    paths: ["puppet/**"]
+jobs:
+  puppet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - run: pip install numpy scipy pillow
+      - name: Rigby2D (pinned)
+        run: |
+          git clone https://github.com/jaisurya-dev-art/rigby2d.git .rigby2d
+          git -C .rigby2d checkout b5d85082228acb31642c2df07543e3540574f3d9
+          cd .rigby2d && npm install --ignore-scripts --no-audit --no-fund
+      - run: cd puppet && npm install --no-audit --no-fund
+      - run: cd puppet && RIGBY=../.rigby2d bash run.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: puppet
+          path: out/puppet_test.mp4
