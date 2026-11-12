@@ -22,7 +22,8 @@ The tool is **Rigby2D** (open source, MIT or Apache-2.0, public beta, pinned com
 2. `extract.py`: green key, then one PNG per part. `heads.py`: talk and blink are patched onto the base head so the face does not jump.
 3. `assemble.py` / `assemble_side.py`: place the parts on a 1000x1600 canvas. Limbs go behind the torso so joints hide; far limbs on the side view are darkened. `mkpsd.mjs` writes the layered PSD. **Layer names matter**: `head`, `torso`, `pelvis`, `arm_l/arm_r`, `leg_l/leg_r`, where l and r are the *character's* sides.
 4. `rb.mjs autorig`: builds the rig. `patch_ik.py` sets elbow and knee bend directions (side view: knees forward with `ik_foot_*=0`, elbows back with `ik_hand_*=1`; front wave: `ik_hand_l=1`).
-5. `anim.py` (front: wave, talk flaps, blinks, shock) and `anim_side.py` (walk cycle) write keys as one `batch_edit`. Keys are on twos (12 fps, stepped) and play at 24 fps for the cartoon feel.
+5. `anim.py` (front: wave, talk flaps, blinks, shock) and `anim_side.py` (walk cycle) write keys as one `batch_edit`. Front keys are on twos (12 fps, stepped). The walk uses smooth 24 fps keys with overlap: the arms and chest lag the legs slightly, so it doesn't look robotic.
+   - Side view uses separate **foot** layers (shoe cut at the ankle). `patch_foot.py` makes the foot bones keep their world angle, so feet stay flat on the ground, then get heel strike, heel-off roll and toe-up keys. Only the sheet's right-pointing leg is used for both legs (the AI drew one shoe backwards).
    - The walk is a classic cycle: 1.0 s per cycle, 60% stance. The planted foot moves back exactly as fast as the body moves forward, so **no foot slide**. It has a hip bob (low at contact, high at passing), a forward lean, a head counter-bob and arms swinging opposite the legs.
    - Root motion lives in the compositor, which moves the sprite at the same speed.
 6. `rb.mjs export_sprite_sheet format=frames`: headless CPU render of the frames (about 20 to 60 s per shot).
@@ -35,6 +36,6 @@ The tool is **Rigby2D** (open source, MIT or Apache-2.0, public beta, pinned com
 - Free tools only, so no card is ever needed. Commit only files we made or that are CC0 (see `assets/sfx/CREDITS.md`).
 
 ## Known limits / next
-- No foot or hand bones yet. Next: hand poses (fist, point, phone, stamp) as alternate images, and a draw-order key so hands can come in front of the face.
+- No hand bones yet. The torso is one rigid piece; a chest/belly split would add squash. Next: hand poses (fist, point, phone, stamp) as alternate images, and a draw-order key so hands can come in front of the face.
 - There is no 3/4 view and no turn between views; we cut between front and side shots.
 - Next steps: build an action library (walk, stop, wave, talk, shock, phone check, facepalm, stamp), then let gag JSON call actions per shot.

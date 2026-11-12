@@ -21,6 +21,7 @@ python3 assemble_side.py >/dev/null
 node mkpsd.mjs layers_side side.psd order.json
 rb autorig '{"psd_file":"side.psd","output":"side_w.rigby","overwrite":true}' >/dev/null
 python3 patch_ik.py side_w.rigby ik_foot_l=0 ik_foot_r=0 ik_hand_l=1 ik_hand_r=1
+python3 patch_foot.py side_w.rigby
 python3 anim_side.py; node rbf.mjs batch_edit ops_side.json >/dev/null
 rm -rf frs && mkdir frs && rb export_sprite_sheet '{"input":"side_w.rigby","output_folder":"frs","format":"frames","animations":["walk"],"fps":24,"scale":0.75,"loop":false}' >/dev/null
 echo "== composite"
