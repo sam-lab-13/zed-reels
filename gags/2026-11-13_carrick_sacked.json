@@ -1,0 +1,9 @@
+{"name":"2026-11-13_carrick_sacked","frames_dir":"assets/frames/2026-11-13","watermark":"ZED",
+"groove":{"start":0.2,"end":23.5,"bpm":120,"duck":[[11.5,14.0]]},
+"scenes":[
+{"img":"s1","dur":5.5,"caption":"8am Thursday, Carrington.\nCarrick turns up for training","motion":"zoomin","sfx":[{"name":"ding","at":0.3,"gain":0.6},{"name":"laugh","at":2.5,"gain":0.4}]},
+{"img":"s2","dur":6,"caption":"Meanwhile in MONACO...\nRatcliffe signs it off","motion":"punch","sfx":[{"name":"whoosh","at":0.1,"gain":0.6},{"name":"sting","at":3.0,"gain":0.8},{"name":"laugh","at":3.6,"gain":0.6}]},
+{"img":"s3","dur":6,"caption":"SACKED before lunch.\n18th, 8 pts from 10 games","motion":"drop","sfx":[{"name":"trombone","at":0.4,"gain":0.8},{"name":"sob","at":2.5,"gain":0.7}]},
+{"img":"s4","dur":6,"caption":"Poch's first game in charge?\nANFIELD. 3 days to prepare.","motion":"climb","sfx":[{"name":"drumroll","at":0.2,"gain":0.6},{"name":"scream","at":3.0,"gain":0.8},{"name":"boing","at":5.0,"gain":0.6}]}
+],
+"end_card":{"title":"ZED","sub":"Carrick OUT, Poch IN","dur":2.5,"color":[200,20,30]}}
