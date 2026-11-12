@@ -1,0 +1,23 @@
+name: render-reel
+on:
+  push:
+    paths: ["gags/**.json"]
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - run: pip install pillow numpy
+      - name: Render changed gags
+        run: |
+          for g in $(git diff --name-only HEAD~1 HEAD -- gags/ 2>/dev/null || ls gags/*.json); do
+            [ -f "$g" ] && python render.py "$g"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reels
+          path: out/*.mp4

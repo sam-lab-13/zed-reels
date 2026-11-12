@@ -1,0 +1,27 @@
+{
+  "name": "carrick_rollercoaster_v3",
+  "frames_dir": "assets/frames",
+  "watermark": "ZED",
+  "calliope": {"start": 0.1, "end": 4.4},
+  "groove": {"start": 4.5, "end": 25.0, "bpm": 120, "duck": [[4.5, 6.5], [14.0, 16.0]]},
+  "scenes": [
+    {"img": "p1", "dur": 4.5, "caption": "Sunday, Old Trafford.\nCarrick before kick-off", "motion": "zoomin",
+     "poses": [[0, "A"], [2.2, "B"], [4.0, "A"]], "sfx": [{"name": "laugh", "at": 2.2, "gain": 0.5}]},
+    {"img": "p2", "dur": 5.0, "caption": "Villa score twice\nin 4 minutes", "motion": "drop",
+     "poses": [[0, "A"], [0.6, "B"], [1.6, "A"], [1.8, "B"]], "hits": [0.6],
+     "sfx": [{"name": "whoosh", "at": 0, "gain": 1}, {"name": "scream", "at": 0.6, "gain": 0.9}]},
+    {"img": "p3", "dur": 4.5, "caption": "Bruno + Tielemans:\n2-2 at half-time", "motion": "climb",
+     "poses": [[0, "flip:0.22"], [3.0, "B"]], "hits": [3.0],
+     "sfx": [{"name": "clicks", "at": 0.1, "gain": 1}, {"name": "ding", "at": 3.0, "gain": 1}, {"name": "confused", "at": 3.4, "gain": 0.8}]},
+    {"img": "p4", "dur": 5.0, "caption": "48'... 53'...\n2-4", "motion": "drop",
+     "poses": [[0, "A"], [1.5, "flip:0.16"], [2.8, "B"]], "hits": [1.5],
+     "sfx": [{"name": "whoosh", "at": 0, "gain": 1}, {"name": "sob", "at": 1.5, "gain": 0.8}, {"name": "trombone", "at": 3.0, "gain": 1}]},
+    {"img": "p5", "dur": 6.0, "caption": "90+2' Zirkzee\n90+6' Dorgu\n4-4!!!", "motion": "punch",
+     "poses": [[0, "A"], [2.6, "flip:0.14"], [3.4, "B"]], "hits": [2.6, 3.4],
+     "sfx": [{"name": "drumroll", "at": 2.0, "gain": 1}, {"name": "boing", "at": 2.6, "gain": 1}, {"name": "chant", "at": 2.5, "gain": 0.9}, {"name": "pops", "at": 2.8, "gain": 1}]},
+    {"img": "p6", "dur": 6.0, "caption": "...still 18th.", "motion": "slow",
+     "poses": [[0, "A"], [3.0, "B"]], "hits": [3.0],
+     "sfx": [{"name": "screech", "at": 0, "gain": 1.5}, {"name": "confused", "at": 3.0, "gain": 0.9}]}
+  ],
+  "end_card": {"title": "ZED", "sub": "Man Utd 4-4 Aston Villa", "dur": 2.5}
+}
