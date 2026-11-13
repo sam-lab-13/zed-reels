@@ -57,3 +57,29 @@ Two drawings snap and float, so a walk is now a **flipbook of 8 pages** (`walk/p
 - No hand bones yet. The torso is one rigid piece; a chest/belly split would add squash. Next: hand poses (fist, point, phone, stamp) as alternate images, and a draw-order key so hands can come in front of the face.
 - There is no 3/4 view and no turn between views; we cut between front and side shots.
 - Next steps: build an action library (walk, stop, wave, talk, shock, phone check, facepalm, stamp), then let gag JSON call actions per shot.
+
+## Motion plan: every action drawn as a flipbook (decided 2026-11-14)
+The walk proved it: drawn pages beat camera moves on stills and the puppet. Every action becomes a short flipbook, not just walks.
+
+**Why still reels so far:** each action needs 4 to 8 drawings, and AI redraws drift between pages (face, kit, background), which flickers. It also costs about 2 to 3 times a still reel.
+
+**Method (per action)**
+1. **Plate:** draw the background once, with no characters. It never changes, so there's no background flicker.
+2. **Key poses:** AI edits of one master character frame on #00FF00, keyed out: anticipation, extreme or contact, follow-through, settle (4 keys).
+3. **In-betweens:** 1 or 2 pages only where the move is big. Small moves use a transform tween plus smear and motion lines.
+4. **Timing:** on twos (12 fps), holds on keys, squash and stretch pages, impact frame (2-frame white flash and smear), SFX on contact.
+5. **Consistency gate:** compare a face crop with the master and reject pages that drift (same idea as the walk's feet lock).
+6. Talk and blink stay on puppet head swaps.
+
+**Action library (reusable across reels)**
+| Action | Pages |
+|---|---|
+| kick / penalty | run-up x2, plant, strike, follow-through, settle |
+| tussle over ball (2 people) | pull left, pull right, wobble loop, break |
+| stick label on back | reach, slap (impact), hold, step back |
+| knee slide celebration | run, drop, slide x2 + spray, roar hold |
+| facepalm, catch ball, phone check, stamp | 3-4 each |
+
+**render.py (to build):** a scene key `"acts": [{"pages": "acts/kick", "at": 0.5, "fps": 12, "x": .., "y": .., "h": .., "loop": false}]` composites the keyed pages over the plate, with the walk's ground lock.
+
+**First test:** Esposito v2 with kick, tussle and label as the first three library actions.
