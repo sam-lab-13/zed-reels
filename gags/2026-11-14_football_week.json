@@ -1,0 +1,167 @@
+{
+ "name": "2026-11-14_football_week",
+ "frames_dir": "assets/frames/2026-11-14_week",
+ "watermark": "ZED",
+ "groove": {
+  "start": 0.2,
+  "end": 25.0,
+  "bpm": 120,
+  "level": 0.55,
+  "duck": [
+   [
+    5.4,
+    7.5
+   ],
+   [
+    11.0,
+    19.0
+   ]
+  ]
+ },
+ "scenes": [
+  {
+   "img": "m1",
+   "dur": 6.0,
+   "motion": "zoomin",
+   "caption": "Haaland's gauntlet.\nLoser goes in goal...",
+   "sfx": [
+    {
+     "name": "whoosh",
+     "at": 0.1,
+     "gain": 0.5
+    },
+    {
+     "name": "drumroll",
+     "at": 3.6,
+     "gain": 0.6
+    },
+    {
+     "name": "whoosh",
+     "at": 5.5,
+     "gain": 0.9
+    }
+   ]
+  },
+  {
+   "img": "m2",
+   "dur": 5.0,
+   "motion": "punch",
+   "hits": [
+    0.0
+   ],
+   "caption": "...MrBeast lost.\n526M subscribers, 0 saves",
+   "sfx": [
+    {
+     "name": "thud",
+     "at": 0.0,
+     "gain": 1.0
+    },
+    {
+     "name": "thunk",
+     "at": 0.05,
+     "gain": 0.8
+    },
+    {
+     "name": "boing",
+     "at": 0.5,
+     "gain": 0.6
+    },
+    {
+     "name": "laugh",
+     "at": 1.2,
+     "gain": 0.6
+    }
+   ]
+  },
+  {
+   "img": "s",
+   "dur": 4.5,
+   "motion": "slow",
+   "caption": "Same Thursday: Palace sack Sage,\nhours after United sacked Carrick",
+   "sfx": [
+    {
+     "name": "trombone",
+     "at": 0.6,
+     "gain": 0.8
+    }
+   ]
+  },
+  {
+   "img": "s",
+   "dur": 4.0,
+   "motion": "zoomin",
+   "caption": "Bottom of the league.\n7 pts from 10 games, 24 conceded",
+   "sfx": [
+    {
+     "name": "sob",
+     "at": 0.8,
+     "gain": 0.6
+    }
+   ]
+  },
+  {
+   "img": "b",
+   "dur": 6.5,
+   "motion": "windup",
+   "poses": [
+    [
+     0,
+     "B"
+    ],
+    [
+     2.6,
+     "A"
+    ]
+   ],
+   "hits": [
+    2.6
+   ],
+   "caption": "Meanwhile, Bruno gets\nUnited's 2nd contract offer",
+   "stamp": {
+    "at": 2.6,
+    "text": "REJECTED",
+    "x": 0.52,
+    "y": 0.74,
+    "scale": 0.9,
+    "angle": -12
+   },
+   "sfx": [
+    {
+     "name": "drumroll",
+     "at": 1.4,
+     "gain": 0.5
+    },
+    {
+     "name": "whoosh",
+     "at": 2.45,
+     "gain": 0.6
+    },
+    {
+     "name": "thud",
+     "at": 2.6,
+     "gain": 0.9
+    },
+    {
+     "name": "surprised",
+     "at": 3.0,
+     "gain": 0.7
+    },
+    {
+     "name": "laugh",
+     "at": 3.8,
+     "gain": 0.5
+    }
+   ]
+  }
+ ],
+ "end_card": {
+  "title": "ZED",
+  "sub": "Shot. Sacked. Snubbed.",
+  "dur": 2.5,
+  "color": [
+   200,
+   20,
+   30
+  ]
+ }
+}
