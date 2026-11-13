@@ -7,3 +7,4 @@
 - chant.wav: mix of "Manifestation #1" #0108 + "Shouts and Applauses of Teens #2" #0237 + "Gas fog horn #2" #1049, BigSoundBank
 - cheer.wav: #0237, pain.wav: "Cry of Pain" #2361, horn.wav: #1049, BigSoundBank
 - walk/art/hits.npy: single steps cut from "Fast Steps on Concrete" #1318 by Joseph Sardin, BigSoundBank (https://bigsoundbank.com/fast-steps-on-concrete-s1318.html), CC0
+- whoosh.wav: "Whoosh #4" #1796; drumroll.wav: "Drum roll 3 S" #2406; birds.wav: "Birds Waking #3" #0999 (first 8 s); ping.wav: "Notification LaSoLisa #4" #2066; ding.wav: "Idea #1" #1398; thud.wav: "Jumping on Concrete #2" #1836. All BigSoundBank (Joseph Sardin), CC0

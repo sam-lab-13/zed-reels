@@ -22,7 +22,7 @@ Songs/chants under copyright are NOT baked in: add them in Instagram's audio pic
 """
 import json, math, os, random, subprocess, sys, wave
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 W, H, FPS, SR = 1080, 1920, 30, 44100
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -58,6 +58,8 @@ def view(img, u, motion, tl):
         zoom = 1.06 + 0.12 * ease(u * 2); amp = 22 * max(0, 1 - tl / 2.2)
         ox = amp * math.sin(tl * 55); oy = amp * math.cos(tl * 47)
         rot = 1.5 * math.sin(tl * 30) * max(0, 1 - tl / 2.2)
+    elif motion == "windup":
+        zoom = 1.0 + 0.08 * ease(u * 3) - 0.0; ox = 4 * math.sin(tl * 40) * (1 if tl < 1.6 else 0)
     elif motion == "punch":
         zoom = 1.25 - 0.17 * ease(tl / 0.6) + 0.04 * ease(u)
     cw, ch = W / zoom, H / zoom
@@ -91,6 +93,99 @@ def render(gag_path):
             p = os.path.join(fdir, f"{s['img']}_{k}.png")
             if not os.path.exists(p): p = os.path.join(fdir, f"{s['img']}_A.png")
             imgs[s["img"] + k] = imgs.get(s["img"] + k) or load(p)
+    sprites = {}
+    def sprite(nm, hpx):
+        key = (nm, hpx)
+        if key not in sprites:
+            im = Image.open(os.path.join(fdir, nm + ".png")).convert("RGBA"); bb = im.getbbox(); im = im.crop(bb)
+            sprites[key] = im.resize((max(1, round(im.width * hpx / im.height)), hpx), Image.LANCZOS)
+        return sprites[key]
+    font_sm = ImageFont.truetype(FONT, 52); font_xs = ImageFont.truetype(FONT, 46); font_big = ImageFont.truetype(FONT, 110)
+    font_stamp = ImageFont.truetype(FONT, 150)
+
+    FLIP = ["wk_A", "wk_A", "wk_A", "wk_Ad", "wk_Ad", "wk_P", "wk_P", "wk_P", "wk_Pu", "wk_Pu",
+            "wk_B", "wk_B", "wk_B", "wk_Bd", "wk_Bd", "wk_Pm", "wk_Pm", "wk_Pm", "wk_Pmu", "wk_Pmu"]  # flipbook, 10 frames per step
+    pages = {}
+    def flip_walker(v, w, tl):
+        # Flipbook walk toward camera. Pages share one canvas whose bottom row is the planted foot, so the feet stay on the ground.
+        until = w.get("until", 4); moving = tl < until
+        u = min(1, tl / until); z0, z1 = w.get("z", [2.5, 1.0]); z = z0 + (z1 - z0) * (1 - (1 - u) ** 1.3)
+        hor, y1, h1 = w["horizon"], w["feet"], w["height"]   # fractions of H at the end position (z = 1)
+        feet = (hor + (y1 - hor) / z) * H; hh = h1 * H / z
+        nm = FLIP[int(tl * FPS) % len(FLIP)] if moving else w.get("rest", "wk_A")
+        if nm not in pages: pages[nm] = Image.open(os.path.join(ROOT, "walk", "pages", nm + ".png")).convert("RGBA")
+        pg = pages[nm]; ref = pages.setdefault("_ref", Image.open(os.path.join(ROOT, "walk", "pages", "wk_A.png")).convert("RGBA"))
+        s = hh / ref.getbbox()[3] if False else hh / 945
+        sp = pg.resize((max(1, round(pg.width * s)), max(1, round(pg.height * s))), Image.LANCZOS)
+        x = w.get("x", 0.5) * W
+        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sw = 0.16 * hh
+        ImageDraw.Draw(sh).ellipse((x - sw, feet - 0.015 * hh, x + sw, feet + 0.012 * hh), fill=(0, 0, 0, 70))
+        v = Image.alpha_composite(v.convert("RGBA"), sh.filter(ImageFilter.GaussianBlur(5)))
+        v.alpha_composite(sp, (int(x - sp.width / 2), int(feet - sp.height + 0.004 * hh)))
+        return v.convert("RGB")
+
+    def walker(v, w, tl):
+        if w.get("flip"): return flip_walker(v, w, tl)
+        # w: {"frames":[A,B], "step":0.22, "until":4, "from":[x,y,h], "to":[x,y,h]}  x,y = feet position (0..1), h = height frac
+        k = ease(min(1, tl / w.get("until", 4)))
+        x, y, hh = [a + (b - a) * k for a, b in zip(w["from"], w["to"])]
+        moving = tl < w.get("until", 4); st = w.get("step", 0.22)
+        fr = w["frames"][int(tl / st) % 2] if moving else w.get("rest", w["frames"][0])
+        bob = abs(math.sin(math.pi * tl / st)) * 14 if moving else 0
+        sp = sprite(fr, int(H * hh)); px = int(x * W - sp.width / 2); py = int(y * H - sp.height - bob)
+        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(sh).ellipse(
+            (x * W - sp.width * 0.33, y * H - 18, x * W + sp.width * 0.33, y * H + 18), fill=(0, 0, 0, 70))
+        v = Image.alpha_composite(v.convert("RGBA"), sh); v.alpha_composite(sp, (px, py))
+        return v.convert("RGB")
+
+    def stamp_fx(v, sf, tl):
+        dt = tl - sf["at"]
+        if dt < 0: return v
+        sc = 2.4 - 1.4 * ease(dt / 0.12) if dt < 0.12 else 1.0
+        txt = sf.get("text", "SACKED"); col = tuple(sf.get("color", [215, 25, 30]))
+        lay = Image.new("RGBA", (1000, 320), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        tb = d.textbbox((0, 0), txt, font=font_stamp); tw, th = tb[2] - tb[0], tb[3] - tb[1]
+        ox, oy = (1000 - tw) // 2, (320 - th) // 2 - tb[1]
+        d.rounded_rectangle((ox - 40, (320 - th) // 2 - 30, ox + tw + 40, (320 + th) // 2 + 30), radius=24, outline=col + (235,), width=16)
+        d.text((ox, oy), txt, font=font_stamp, fill=col + (235,))
+        lay = lay.rotate(sf.get("angle", 12), expand=True, resample=Image.BICUBIC)
+        lay = lay.resize((int(lay.width * sc * sf.get("scale", 0.7)), int(lay.height * sc * sf.get("scale", 0.7))), Image.BICUBIC)
+        v = v.convert("RGBA"); v.alpha_composite(lay, (int(sf["x"] * W - lay.width / 2), int(sf["y"] * H - lay.height / 2)))
+        return v.convert("RGB")
+
+    def phone_fx(v, ph, tl):
+        # notification banner at ph["ping"], full email at ph["open"]
+        out = v
+        if ph["ping"] <= tl < ph["open"] + 0.3:
+            k = ease((tl - ph["ping"]) / 0.25); y0 = int(-200 + 470 * k)
+            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+            d.rounded_rectangle((50, y0, W - 50, y0 + 170), radius=36, fill=(250, 250, 250, 245), outline=(30, 30, 30, 255), width=4)
+            d.rounded_rectangle((80, y0 + 35, 180, y0 + 135), radius=22, fill=(218, 41, 28, 255))
+            d.text((106, y0 + 52), "M", font=font, fill=(255, 255, 255))
+            d.text((210, y0 + 22), ph.get("from", "Club"), font=font_sm, fill=(20, 20, 20))
+            d.text((210, y0 + 92), ph.get("subject", ""), font=font_xs, fill=(80, 80, 80))
+            out = Image.alpha_composite(out.convert("RGBA"), lay).convert("RGB")
+        if tl >= ph["open"]:
+            k = ease((tl - ph["open"]) / 0.3); pw, phh = 820, 1400
+            px, py = (W - pw) // 2, int(H - (H - 330) * k)
+            dim = Image.new("RGBA", (W, H), (0, 0, 0, int(140 * k)))
+            out = Image.alpha_composite(out.convert("RGBA"), dim)
+            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+            d.rounded_rectangle((px, py, px + pw, py + phh), radius=90, fill=(20, 20, 22, 255))
+            sx, sy = px + 30, py + 30; d.rounded_rectangle((sx, sy, sx + pw - 60, sy + phh - 60), radius=66, fill=(255, 255, 255, 255))
+            d.rounded_rectangle((px + pw // 2 - 90, py + 44, px + pw // 2 + 90, py + 84), radius=20, fill=(20, 20, 22, 255))
+            d.rectangle((sx, sy + 110, sx + pw - 60, sy + 200), fill=(218, 41, 28, 255))
+            d.text((sx + 40, sy + 130), "Inbox", font=font_sm, fill=(255, 255, 255))
+            y = sy + 240
+            d.text((sx + 40, y), "From: " + ph.get("from", ""), font=font_xs, fill=(90, 90, 90)); y += 70
+            d.text((sx + 40, y), ph.get("subject", ""), font=font_sm, fill=(10, 10, 10)); y += 100
+            d.line((sx + 40, y, sx + pw - 100, y), fill=(220, 220, 220), width=3); y += 40
+            shown = int(max(0, tl - ph["open"] - 0.35) / ph.get("line_rate", 0.45)) + 1
+            for i, ln in enumerate(ph.get("body", [])[:shown]):
+                big = ln.isupper()
+                d.text((sx + 40, y), ln, font=font_big if big else font_xs, fill=(200, 20, 30) if big else (30, 30, 30)); y += 150 if big else 72
+            out = Image.alpha_composite(out, lay).convert("RGB")
+        return out
 
     def caption(v, text, appear):
         if appear <= 0 or not text: return v
@@ -128,7 +223,10 @@ def render(gag_path):
             i = next(i for i, s in enumerate(scenes) if s["a"] <= t < s["b"]); s = scenes[i]
             tl = t - s["a"]; u = tl / s["dur"]; mot = s.get("motion", "still")
             v = view(imgs[s["img"] + pose_at(s.get("poses"), tl)], u, mot, tl)
+            if s.get("walk"): v = walker(v, s["walk"], tl)
+            if s.get("stamp"): v = stamp_fx(v, s["stamp"], tl)
             v = shake(v, tl, s.get("hits", []))
+            if s.get("phone"): v = phone_fx(v, s["phone"], tl)
             if s.get("rain", mot == "drop") and tl < 2.5:
                 d0 = ImageDraw.Draw(v); r = random.Random(int(t * FPS))
                 for _ in range(10):
@@ -167,6 +265,9 @@ def render(gag_path):
         "ding": lambda: np.concatenate([tone(1568, 0.8, "sine") * np.exp(-tt(0.8) * 5) * 0.4]),
         "boing": lambda: tone(sweep(150, 600, 0.5) * (1 + 0.15 * np.sin(2 * np.pi * 14 * tt(0.5))), 0.5, "sine") * 0.45,
         "roar": lambda: lp(noise(3.6), 12) * env(int(3.6 * SR), 0.3, 1.2) * 0.55,
+        "thunk": lambda: (kick() * 1.2 + np.concatenate([lp(noise(0.12), 3) * np.exp(-tt(0.12) * 35), np.zeros(int(0.13 * SR))])[:int(0.25 * SR)] * 0.6),
+        "ping": None, "steps": None,
+        "step": lambda: lp(noise(0.06), 5) * np.exp(-tt(0.06) * 50) * 0.5,
         "screech": lambda: tone(sweep(2400, 1900, 1.0), 1.0, "sine") * 0.12,
         "sting": None, "trombone": None, "pops": None, "clicks": None, "drumroll": None, "calliope": None,
     }
@@ -180,6 +281,10 @@ def render(gag_path):
             for k in range(8): add(lp(noise(0.08), 2) * np.exp(-tt(0.08) * 40), at + k * 0.33 + random.random() * 0.1, 0.6 * gn)
         elif nm == "clicks":
             for k in range(14): add(lp(noise(0.03), 3) * env(int(0.03 * SR), 0.001, 0.02), at + k * 0.22, 0.5 * gn)
+        elif nm == "ping":
+            add(tone(1319, 0.14, "sine") * np.exp(-tt(0.14) * 8) * 0.35, at, gn); add(tone(1760, 0.5, "sine") * np.exp(-tt(0.5) * 6) * 0.35, at + 0.12, gn)
+        elif nm == "steps":
+            for k in range(18): add(lp(noise(0.06), 5) * np.exp(-tt(0.06) * 50) * 0.5, at + k * 0.22, gn)
         elif nm == "drumroll":
             for k in range(12): add(snare(), at + k * 0.05, (0.25 + k * 0.02) * gn)
         else:
@@ -195,10 +300,19 @@ def render(gag_path):
     for s in scenes:
         for e in s.get("sfx", []):
             nm, at, gn = e["name"], s["a"] + e.get("at", 0), e.get("gain", 0.7)
-            if nm in SYN: synth(nm, at, gn)
+            if nm in SYN and not os.path.exists(os.path.join(ROOT, "assets", "sfx", nm + ".wav")): synth(nm, at, gn)
             else:
                 if nm not in cache: cache[nm] = load_wav(nm)
                 add(cache[nm], at, gn)
+        w = s.get("walk")
+        if w and w.get("flip"):   # one real footstep per contact (every 10 frames), louder as he nears
+            hits = np.load(os.path.join(ROOT, "walk", "art", "hits.npy")); k = 0; tb = 0.0
+            while tb < w.get("until", 4):
+                u = tb / w["until"]; add(hits[k % len(hits)] * 0.5, s["a"] + tb, w.get("step_gain", 0.35) * (0.45 + 0.55 * u)); k += 1; tb += 10 / FPS
+        if s.get("ambience"):
+            if s["ambience"] not in cache: cache[s["ambience"]] = load_wav(s["ambience"])
+            amb = cache[s["ambience"]][:int(s["dur"] * SR)].copy(); f = int(0.4 * SR)
+            amb[:f] *= np.linspace(0, 1, f); amb[-f:] *= np.linspace(1, 0, f); add(amb, s["a"], s.get("amb_gain", 0.25))
     if ec: synth("sting", end_a + 0.1, 1.0)
     cal = g.get("calliope")
     if cal:
@@ -212,7 +326,7 @@ def render(gag_path):
     if gr:
         beat = 60 / gr.get("bpm", 120); tb = gr["start"]; i = 0; bass = [55, 55, 65.4, 49]
         while tb < gr["end"] - 0.1:
-            gain = 0.15 if any(a <= tb < b for a, b in gr.get("duck", [])) else 0.35
+            gain = (0.15 if any(a <= tb < b for a, b in gr.get("duck", [])) else 0.35) * gr.get("level", 1.0)
             add(kick(), tb, 0.9 * gain); add(hat(), tb + beat / 2, 0.25 * gain)
             if i % 2: add(snare(), tb, 0.6 * gain)
             add(tone(bass[(i // 4) % 4] * 2, beat * 0.9), tb, 0.35 * gain)

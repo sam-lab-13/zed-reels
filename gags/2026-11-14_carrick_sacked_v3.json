@@ -1,0 +1,199 @@
+{
+ "name": "2026-11-14_carrick_sacked_v3",
+ "frames_dir": "assets/frames/2026-11-13",
+ "watermark": "ZED",
+ "groove": {
+  "start": 0.2,
+  "end": 29.0,
+  "bpm": 120,
+  "duck": [
+   [
+    11.0,
+    17.0
+   ],
+   [
+    17.0,
+    19.5
+   ]
+  ],
+  "level": 0.6
+ },
+ "scenes": [
+  {
+   "img": "s1bg",
+   "dur": 5.5,
+   "caption": "8am Thursday, Carrington.\nCarrick turns up for training",
+   "motion": "slow",
+   "walk": {
+    "flip": true,
+    "until": 4.0,
+    "z": [
+     2.5,
+     1.0
+    ],
+    "horizon": 0.56,
+    "feet": 0.955,
+    "height": 0.68,
+    "x": 0.5,
+    "step_gain": 0.45
+   },
+   "sfx": [
+    {
+     "name": "ding",
+     "at": 0.3,
+     "gain": 0.6
+    },
+    {
+     "name": "laugh",
+     "at": 4.4,
+     "gain": 0.4
+    }
+   ],
+   "ambience": "birds",
+   "amb_gain": 0.3
+  },
+  {
+   "img": "s2",
+   "dur": 5.5,
+   "caption": "Meanwhile in MONACO...\nRatcliffe signs it off",
+   "motion": "windup",
+   "poses": [
+    [
+     0,
+     "B"
+    ],
+    [
+     1.6,
+     "A"
+    ]
+   ],
+   "hits": [
+    1.6
+   ],
+   "stamp": {
+    "at": 1.6,
+    "text": "SACKED",
+    "x": 0.56,
+    "y": 0.74,
+    "scale": 0.85,
+    "angle": 14
+   },
+   "sfx": [
+    {
+     "name": "whoosh",
+     "at": 0.1,
+     "gain": 0.6
+    },
+    {
+     "name": "drumroll",
+     "at": 0.9,
+     "gain": 0.5
+    },
+    {
+     "name": "thunk",
+     "at": 1.6,
+     "gain": 1.0
+    },
+    {
+     "name": "laugh",
+     "at": 2.2,
+     "gain": 0.6
+    },
+    {
+     "name": "thud",
+     "at": 1.6,
+     "gain": 0.9
+    }
+   ]
+  },
+  {
+   "img": "s2m",
+   "dur": 6.5,
+   "caption": "9:47am. Phone buzzes...",
+   "motion": "zoomin",
+   "phone": {
+    "ping": 1.0,
+    "open": 2.4,
+    "from": "Manchester United",
+    "subject": "Re: Your position",
+    "body": [
+     "Dear Michael,",
+     "Thank you for your service.",
+     "Effective immediately:",
+     "SACKED",
+     "Please return your",
+     "lanyard and the coffee.",
+     "- Sir Jim (from the yacht)"
+    ]
+   },
+   "sfx": [
+    {
+     "name": "ping",
+     "at": 1.0,
+     "gain": 0.8
+    },
+    {
+     "name": "whoosh",
+     "at": 2.4,
+     "gain": 0.4
+    },
+    {
+     "name": "surprised",
+     "at": 4.0,
+     "gain": 0.8
+    }
+   ]
+  },
+  {
+   "img": "s3",
+   "dur": 6,
+   "caption": "SACKED before lunch.\n18th, 8 pts from 10 games",
+   "motion": "drop",
+   "sfx": [
+    {
+     "name": "trombone",
+     "at": 0.4,
+     "gain": 0.8
+    },
+    {
+     "name": "sob",
+     "at": 2.5,
+     "gain": 0.7
+    }
+   ]
+  },
+  {
+   "img": "s4",
+   "dur": 6,
+   "caption": "Poch's first game in charge?\nANFIELD. 3 days to prepare.",
+   "motion": "climb",
+   "sfx": [
+    {
+     "name": "drumroll",
+     "at": 0.2,
+     "gain": 0.6
+    },
+    {
+     "name": "scream",
+     "at": 3.0,
+     "gain": 0.8
+    },
+    {
+     "name": "boing",
+     "at": 5.0,
+     "gain": 0.6
+    }
+   ]
+  }
+ ],
+ "end_card": {
+  "title": "ZED",
+  "sub": "Carrick OUT, Poch IN",
+  "dur": 2.5,
+  "color": [
+   200,
+   20,
+   30
+  ]
+ }
+}

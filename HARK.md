@@ -24,6 +24,17 @@ The puppet walk looked robotic: a stiff cut-out with a floating head. Walks now 
 3. `walk_toward.py` alternates the 2 drawings each step (0.42 s), scales him up with perspective (z 2.5 to 1.0, ground line to the horizon), adds bob (high at passing), small sway and a contact shadow. It plays real CC0 footsteps on each contact, getting louder as he nears, then cuts to the standing shot.
 Run: `cd walk && python3 walk_toward.py` (needs numpy, pillow, ffmpeg).
 
+### v2 flipbook (2026-11-14), used by render.py
+Two drawings snap and float, so a walk is now a **flipbook of 8 pages** (`walk/pages/`, built by `walk/flip_pages.py`):
+- Reused: `k1` (contact, left foot forward) and its leg mirror (contact, right foot forward).
+- New drawing: one passing pose (`art/pass_raw.png`, an AI edit of the same frame changing the legs only) and its leg mirror.
+- Squash and stretch: a `down` page (0.975 tall) after each contact, an `up` page (1.02) after each passing.
+- Order, 10 frames per step at 24 fps: A x3, A-down x2, Pass x3, Pass-up x2, then B, B-down, Pass-mirror, Pass-mirror-up.
+- **Feet lock:** every page sits on one canvas whose bottom row is the planted foot, placed exactly on the ground line, so he never floats.
+- Gag JSON: `"walk": {"flip": true, "until": 4.0, "z": [2.5, 1.0], "horizon": 0.56, "feet": 0.955, "height": 0.68}`. render.py adds one real footstep per contact, louder as he nears.
+- Audio: any SFX name with a real CC0 wav in `assets/sfx/` now beats the synth version (whoosh, drumroll, ping, ding, thud). `"ambience": "birds"` adds a faded bed to a scene. `groove.level` turns the synth beat down.
+- To add a new walk: reuse existing drawings, generate only the missing in-between, run flip_pages.py.
+
 ## Puppet pipeline (`puppet/run.sh`): small gestures only, not walks
 1. **Art**: an AI "parts sheet" of the character on pure green #00FF00, with head, torso, pelvis, two whole arms and two whole legs drawn separately and with rounded joint ends. There is one sheet per view: `art/parts_v1.png` (front) and `art/side_parts_v1.png` (side, facing right). Head variants (talk, shock, blink) are AI edits of the base head (`art/heads/`).
 2. `extract.py`: green key, then one PNG per part. `heads.py`: talk and blink are patched onto the base head so the face does not jump.
