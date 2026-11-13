@@ -1,0 +1,155 @@
+{
+ "name": "2026-11-14_wrong_esposito",
+ "frames_dir": "assets/frames/2026-11-14_esposito",
+ "watermark": "ZED",
+ "groove": {
+  "start": 0.2,
+  "end": 26.0,
+  "bpm": 120,
+  "level": 0.5,
+  "duck": [
+   [
+    5.0,
+    9.0
+   ],
+   [
+    15.0,
+    18.0
+   ]
+  ]
+ },
+ "scenes": [
+  {
+   "img": "e1",
+   "dur": 5.5,
+   "motion": "windup",
+   "caption": "Italy v France. Penalty!\nTaker: Pio Esposito.",
+   "sfx": [
+    {
+     "name": "whoosh",
+     "at": 0.1,
+     "gain": 0.4
+    },
+    {
+     "name": "confused",
+     "at": 2.2,
+     "gain": 0.6
+    },
+    {
+     "name": "drumroll",
+     "at": 3.8,
+     "gain": 0.6
+    }
+   ]
+  },
+  {
+   "img": "e2",
+   "dur": 5.0,
+   "motion": "punch",
+   "hits": [
+    0.0
+   ],
+   "caption": "Taken by: his brother Sebastiano.\nThe OTHER Esposito.",
+   "sfx": [
+    {
+     "name": "thunk",
+     "at": 0.0,
+     "gain": 0.9
+    },
+    {
+     "name": "whoosh",
+     "at": 0.05,
+     "gain": 0.9
+    },
+    {
+     "name": "scream",
+     "at": 0.9,
+     "gain": 0.6
+    },
+    {
+     "name": "trombone",
+     "at": 2.0,
+     "gain": 0.8
+    }
+   ]
+  },
+  {
+   "img": "e3",
+   "dur": 5.0,
+   "motion": "zoomin",
+   "caption": "Wide. VERY wide. F1 world champ\nKimi Antonelli was in the crowd",
+   "sfx": [
+    {
+     "name": "boing",
+     "at": 0.3,
+     "gain": 0.6
+    },
+    {
+     "name": "cheer",
+     "at": 0.6,
+     "gain": 0.5
+    },
+    {
+     "name": "laugh",
+     "at": 2.4,
+     "gain": 0.6
+    }
+   ]
+  },
+  {
+   "img": "e4",
+   "dur": 5.0,
+   "motion": "drop",
+   "rain": false,
+   "hits": [
+    0.0
+   ],
+   "caption": "75 mins: penalty, RIGHT brother.\nGOAL! Italy 3-1 France",
+   "sfx": [
+    {
+     "name": "thud",
+     "at": 0.0,
+     "gain": 0.9
+    },
+    {
+     "name": "cheer",
+     "at": 0.2,
+     "gain": 0.8
+    },
+    {
+     "name": "horn",
+     "at": 0.5,
+     "gain": 0.5
+    }
+   ]
+  },
+  {
+   "img": "e5",
+   "dur": 6.0,
+   "motion": "slow",
+   "caption": "Mancini: \"Next time they\nwon't be confused again.\"",
+   "sfx": [
+    {
+     "name": "ding",
+     "at": 2.0,
+     "gain": 0.5
+    },
+    {
+     "name": "laugh",
+     "at": 3.0,
+     "gain": 0.7
+    }
+   ]
+  }
+ ],
+ "end_card": {
+  "title": "ZED",
+  "sub": "Know your Esposito.",
+  "dur": 2.5,
+  "color": [
+   20,
+   60,
+   200
+  ]
+ }
+}
